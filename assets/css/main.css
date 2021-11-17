@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body {
+	margin: 0;
+	background-color: var(--primary);
+	min-height: 100%;
+	font-family: "Exo", sans-serif;
+	overflow-x: hidden;
+	font-weight: 400;
+	letter-spacing: 1px;
+	user-select: none;
+	color: #fff;
+}
+
+:root {
+	--brand: #ea1646;
+	--primary: #12141d;
+	--secondary: #20222e;
+	--third: #636488;
+	--sub: #b6b6bd;
+
+	/* Colors */
+	--danger: #ff4b54;
+	--warning: #ff8f00;
+	--success: #33d69f;
+
+	/* Utils */
+	--simple-boxshadow: 0 0 10px 0px rgb(0 0 0 / 30%);
+}
+
+.ArkButton {
+	cursor: pointer;
+	height: 3rem;
+	border-radius: 3px;
+	border-style: solid;
+	overflow: hidden;
+	position: relative;
+	border-width: 0;
+	outline: 0;
+	white-space: nowrap;
+	border-color: transparent;
+	color: #fff;
+	padding: 0 30px;
+	background: var(--brand);
+	background-image: linear-gradient(135deg, #fff 50%, transparent 51%);
+	background-size: 100px 100px;
+	background-position: -50px -50px;
+	background-repeat: no-repeat;
+	transition: background ease 0.3s;
+	box-shadow: var(--simple-boxshadow);
+	font-weight: 700;
+	text-transform: uppercase;
+	font-size: 13px;
+	letter-spacing: 1px;
+	display: flex;
+	align-items: center;
+}
+
+.ArkButton:hover {
+	background-size: 200% 200%;
+	background-position: 0px 0px;
+	color: var(--brand);
+}
+
+.module {
+	padding: 15px;
+	width: 770px;
+}
+
+.data {
+	display: none;
+}
+
+.data.show {
+	display: block;
+}
+
+.entry {
+	align-items: flex-start;
+	border-bottom: 1px solid var(--secondary);
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+	font-size: 16px;
+	grid-template-columns: 1fr 2fr;
+}
+
+.entry:last-child,
+.entry .table .item:last-child {
+	border-bottom: none;
+}
+
+.entry .label {
+	display: flex;
+	align-items: center;
+}
+
+.entry .label .passed {
+	color: var(--success);
+}
+
+.entry .label .failed {
+	color:  var(--danger);
+}
+
+.entry .label .material-icons {
+	margin-right: 8px;
+}
+
+.entry .notes {
+	color: rgba(255, 255, 255, .7);
+}
+
+.entry .table .item {
+	color: rgba(255, 255, 255, .7);
+	border-bottom: 1px solid var(--secondary);
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+

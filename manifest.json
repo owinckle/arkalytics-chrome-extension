@@ -1,0 +1,14 @@
+{
+	"name": "Arkalytics",
+	"description": "Get an SEO insight of a page.",
+	"version": "1.0",
+	"manifest_version": 2,
+	"browser_action": {
+		"default_icon": "assets/img/logo.png",
+		"default_popup": "popup.html"
+	},
+	"permissions": [
+		"tabs",
+		"<all_urls>"
+	]
+}
