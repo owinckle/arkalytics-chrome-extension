@@ -28,6 +28,18 @@ body {
 	--simple-boxshadow: 0 0 10px 0px rgb(0 0 0 / 30%);
 }
 
+*::-webkit-scrollbar-thumb {
+	background-color: var(--brand);
+}
+
+*::-webkit-scrollbar-track {
+	background-color: #444;
+}
+
+*::-webkit-scrollbar {
+	width: 9px;
+}
+
 .ArkButton {
 	cursor: pointer;
 	height: 3rem;
@@ -64,15 +76,7 @@ body {
 
 .module {
 	padding: 15px;
-	width: 770px;
-}
-
-.data {
-	display: none;
-}
-
-.data.show {
-	display: block;
+	width: 100px;
 }
 
 .entry {
