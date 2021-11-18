@@ -1,18 +1,44 @@
 function generateStyle() {
 	document.body.innerHTML += `
 		<style type="text/css">
+			@font-face {
+				font-family: 'Material Icons';
+				font-style: normal;
+				font-weight: 400;
+				src: url(https://fonts.gstatic.com/s/materialicons/v115/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
+			}
+
+			.material-icons {
+				font-family: 'Material Icons' !important;
+				font-weight: normal;
+				font-style: normal;
+				font-size: 24px;
+				line-height: 1;
+				letter-spacing: normal;
+				text-transform: none;
+				display: inline-block;
+				white-space: nowrap;
+				word-wrap: normal;
+				direction: ltr;
+				-webkit-font-feature-settings: 'liga';
+				-webkit-font-smoothing: antialiased;
+			}
+
 			#arkalytics-panel {
 				background : #12141d;
 				height: 100vh;
-				width: 500px;
+				width: 700px;
 				top: 0px;
 				right: 0px;
 				position: fixed;
-				box-shadow: 0 0 10px 0px rgb(0 0 0 / 30%);
+				box-shadow: -5px 0px 10px 6px rgb(0 0 0 / 50%);
 				transition: right .3s ease;
 				z-index: 9999;
 				padding: 15px;
+				overflow-y: auto;
+				opacity: .95;
 			}
+
 			#arkalytics-header {
 				display: flex;
 				justify-content: space-between;
@@ -30,8 +56,6 @@ function generateStyle() {
 			}
 			#arkalytics-close {
 				cursor: pointer;
-				font-weight: 400;
-				font-size: 18px;
 				color: #ffff;
 				transition: color .3s ease;
 			}
@@ -51,6 +75,8 @@ function generateStyle() {
 			.ark__item {
 				align-items: flex-start;
 				color: #fff;
+			}
+			.ark__border {
 				border-bottom: 1px solid #20222e;
 				padding-bottom: 10px;
 				margin-bottom: 10px;
@@ -60,16 +86,41 @@ function generateStyle() {
 				margin-bottom: 15px;
 			}
 			.ark__item__default {
-				grid-template-columns: 1fr 2fr;
+				grid-template-columns: 200px 2fr;
 			}
 			.ark__element__border {
 				border: 3px solid #ff4b54;
+			}
+			.ark__item__title {
+				display: flex;
+				flex-direction: row-reverse;
+				align-items: center;
+				justify-content: flex-end;
+			}
+			.ark__item__title .material-icons {
+				margin-right: 10px;
+				color: #33d69f;
+			}
+			.ark__item__title.failed .material-icons {
+				color: #ff4b54;
+			}
+			.ark__list {
+				color: #fff;
+				padding-left: 2em;
+			}
+			.ark__list li {
+				margin-bottom: 10px;
+				list-style-type: disc;
 			}
 		</style>`
 }
 
 function reset() {
 	document.querySelectorAll(".ark__item").forEach(e =>
+		e.remove()
+	);
+
+	document.querySelectorAll(".ark__list").forEach(e =>
 		e.remove()
 	);
 
@@ -80,31 +131,9 @@ function reset() {
 
 function closePanel() {
 	let panel = document.getElementById("arkalytics-panel");
-	panel.style.right	= "-550px";
+	panel.style.right	= "-730px";
 	let body			= document.body;
 	body.style.width	= "100%";
-}
-
-function getScrollbarWidth() {
-	const outer = document.createElement('div');
-	outer.style.visibility = 'hidden';
-	outer.style.overflow = 'scroll';
-	outer.style.msOverflowStyle = 'scrollbar';
-	document.body.appendChild(outer);
-	
-	const inner = document.createElement('div');
-	outer.appendChild(inner);
-	
-	const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
-	outer.parentNode.removeChild(outer);
-
-	return scrollbarWidth;
-}
-
-function shrinkBody() {
-	let body			= document.body;
-	let scrollbarWidth	= getScrollbarWidth();
-	body.style.width	= "calc(100vw - 500px - " + scrollbarWidth + "px)";
 }
 
 function metaTitle() {
@@ -115,38 +144,6 @@ function metaTitle() {
 function metaDescription() {
 	const description = document.head.querySelector('meta[name="description"]')
 	return description ? description.getAttribute('content') : false;
-}
-
-function headingTags() {
-	const h1	= document.getElementsByTagName("h1");
-	const h2	= document.getElementsByTagName("h2");
-	let status;
-
-	let h1_tags	= [];
-	if (h1.length > 0) {
-		for (let i = 0; i < h1.length; i++) {
-			h1_tags.push(h1[i].innerText);
-		}
-	}
-
-	let h2_tags	= [];
-	if (h2.length > 0) {
-		for (let i = 0; i < h2.length; i++) {
-			h2_tags.push(h2[i].innerText);
-		}
-	}
-
-	if (h1.length == 0 || h2.length == 0) {
-		status = false;
-	} else {
-		status = true;
-	}
-	return {
-		status: status,
-		h1: h1_tags,
-		h2: h2_tags
-	}
-
 }
 
 function robots() {
@@ -172,24 +169,38 @@ function sitemap() {
 }
 
 function imageAlt() {
+	let errors	= [];
 	document.querySelectorAll("img").forEach(e => {
 		if (e.alt == "") {
 			e.classList.add("ark__element__border")
 			e.setAttribute("aria-arkalytics-border", "true");
+			errors.push(e.src);
 		}
 	});
+	return [errors, errors.length > 0 ? false : true]
 }
 
 function favicon() {
 	return true	
 }
 
-function generateDefaultItem(item_name, test, test_success, test_failed) {
+function generateDefaultItem(item_name, test, test_success, test_failed, border) {
 	let item	= document.createElement("div");
 	item.setAttribute("class", "ark__grid-layout ark__2-grid ark__item ark__item__default");
+	if (border) {
+		item.classList.add("ark__border");
+	}
 
 	let title	= document.createElement("div");
+	title.setAttribute("class", "ark__item__title");
+	if (!test) {
+		title.classList.add("failed");
+	}
+	let title_icon	= document.createElement("span");
+	title_icon.setAttribute("class", "material-icons");
+	title_icon.innerText = !test ? "close" : "check";
 	title.innerText	= item_name;
+	title.append(title_icon);
 	item.append(title);
 
 	let data		= document.createElement("div");
@@ -208,6 +219,20 @@ function generateDefaultItem(item_name, test, test_success, test_failed) {
 	return item;
 }
 
+function generateList(list) {
+	let container	= document.createElement("ul");
+	container.setAttribute("class", "ark__list ark__border");
+	let item;
+
+	for (let i = 0; i < list.length; i++) {
+		item			= document.createElement("li");
+		item.innerText	= list[i];
+		container.append(item);
+	}
+
+	return container;
+}
+
 function analyze() {
 	reset();
 
@@ -218,31 +243,44 @@ function analyze() {
 		"Meta Title",
 		metaTitle(),
 		"Congratulations! Your page is using a title tag",
-		"Your page is not using a title tag")
+		"Your page is not using a title tag",
+		true)
 	);
 	// Meta description
 	panel.append(generateDefaultItem(
 		"Meta Description",
 		metaDescription(),
 		"Congratulations! Your page is using a description tag",
-		"Your page is not using a description tag")
+		"Your page is not using a description tag",
+		true)
 	);
 	// Robots.txt
 	panel.append(generateDefaultItem(
 		"Robots.txt",
 		robots(),
 		"Congratulations! Your website uses a \"robots.txt\" file",
-		"Your website is not using a \"robots.txt\" file")
+		"Your website is not using a \"robots.txt\" file",
+		true)
 	);
 	// Sitemap.xml
 	panel.append(generateDefaultItem(
 		"Sitemap.xml",
 		sitemap(),
 		"Congratulations! Your website is using a \"sitemap.xml\" file",
-		"Your website is not using a \"sitemap.xml\" file")
+		"Your website is not using a \"sitemap.xml\" file",
+		true)
 	);
 
-	imageAlt();
+	// Image alts
+	const imageAlts	= imageAlt();
+	panel.append(generateDefaultItem(
+		"Image Alt",
+		imageAlts[1],
+		"All of your page's <img> tags have the required \"alt\" attribute",
+		"The following <img> tags do not have the required \"alt\" attribute",
+		false)
+	);
+	panel.append(generateList(imageAlts[0]));
 }
 
 function createPanel() {
@@ -259,21 +297,20 @@ function createPanel() {
 
 	let close				= document.createElement("span");
 	close.setAttribute("id", "arkalytics-close");
-	close.innerText			= "X";
+	close.setAttribute("class", "material-icons");
+	close.innerText			= "close";
 	close.onclick			= closePanel;
 
 	header.append(title);
 	header.append(close);
 	panel.append(header);
 
-	shrinkBody();
 	document.body.appendChild(panel);
 }
 
 if (!document.getElementById("arkalytics-panel")) {
 	createPanel();
 } else {
-	shrinkBody();
 	let panel = document.getElementById("arkalytics-panel");
 	document.body.appendChild(panel);
 	panel.style.right	= "0px";
