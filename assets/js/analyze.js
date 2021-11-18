@@ -177,7 +177,7 @@ function imageAlt() {
 			errors.push(e.src);
 		}
 	});
-	return [errors, errors.length > 0 ? false : true]
+	return [errors, errors.length > 0 ? false : ""]
 }
 
 function favicon() {
@@ -238,10 +238,17 @@ function analyze() {
 
 	let panel = document.getElementById("arkalytics-panel");
 
+	// Tests
+	const meta_title_test		= metaTitle();
+	const meta_description_test	= metaDescription();
+	const robots_test			= robots();
+	const sitemap_test			= sitemap();
+	const image_alts_test		= imageAlt();
+
 	// Meta title
 	panel.append(generateDefaultItem(
 		"Meta Title",
-		metaTitle(),
+		meta_title_test,
 		"Congratulations! Your page is using a title tag",
 		"Your page is not using a title tag",
 		true)
@@ -249,7 +256,7 @@ function analyze() {
 	// Meta description
 	panel.append(generateDefaultItem(
 		"Meta Description",
-		metaDescription(),
+		meta_description_test,
 		"Congratulations! Your page is using a description tag",
 		"Your page is not using a description tag",
 		true)
@@ -257,7 +264,7 @@ function analyze() {
 	// Robots.txt
 	panel.append(generateDefaultItem(
 		"Robots.txt",
-		robots(),
+		robots_test,
 		"Congratulations! Your website uses a \"robots.txt\" file",
 		"Your website is not using a \"robots.txt\" file",
 		true)
@@ -265,22 +272,21 @@ function analyze() {
 	// Sitemap.xml
 	panel.append(generateDefaultItem(
 		"Sitemap.xml",
-		sitemap(),
+		sitemap_test,
 		"Congratulations! Your website is using a \"sitemap.xml\" file",
 		"Your website is not using a \"sitemap.xml\" file",
 		true)
 	);
 
 	// Image alts
-	const imageAlts	= imageAlt();
 	panel.append(generateDefaultItem(
 		"Image Alt",
-		imageAlts[1],
+		image_alts_test[1],
 		"All of your page's <img> tags have the required \"alt\" attribute",
 		"The following <img> tags do not have the required \"alt\" attribute",
 		false)
 	);
-	panel.append(generateList(imageAlts[0]));
+	panel.append(generateList(image_alts_test[0]));
 }
 
 function createPanel() {
